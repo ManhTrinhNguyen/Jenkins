@@ -13,6 +13,16 @@
 - Set up and ran **Jenkins** as a Docker container.
 - Initialized Jenkins for use in build automation.
 
+### Step 1 : Create Ubuntu Server on DigitalOcean 
+
+  - Go to Digital ocean -> Create Droplet -> Choose Region and Capacity -> Create SSH key
+
+  - To create SSH key :
+
+    - In terminal : `ssh-keygen` . There will be .ssh/id_rsa and .ssh/id_rsa.pub . Then `cat .ssh/id_rsa.pub` take this content and put it into Digital ocean
+   
+    <img width="600" alt="Screenshot 2025-03-18 at 14 37 03" src="https://github.com/user-attachments/assets/49d7f9df-e2c3-4162-9a5e-7495435fd593" />
+
 ---
 
 ## Project 2: Create a Jenkins Shared Library
