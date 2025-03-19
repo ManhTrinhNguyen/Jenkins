@@ -51,7 +51,43 @@
      
         - jenkins_home : This folder doesn't exist yet (Name Volume references) . Docker will create a physical path on the server will store a data with that Name References
      
-        - /var/jenkins_home : This is a Actual directory in Cotnainer (Inside Jenkins) that will store data  
+        - /var/jenkins_home : This is a Actual directory in Cotnainer (Inside Jenkins) that will store data
+     
+  - Step 5 : In the UI . First Access Jenkins will give me a path to get the Password . I will `docker exec -t <container-id> bash` go inside Jenkins and get the password
+
+  - To check Volume that I create : `docker inspect volume jenkins_home`
+
+### Install Build tools in Jenkins
+
+<img width="937" alt="Screenshot 2025-03-19 at 09 00 17" src="https://github.com/user-attachments/assets/03f85e65-b362-4bb2-8053-81d2ae3310d9" />
+
+  - Depending on my Application, I have different tools installed and configured on Jenkins
+
+**2 ways to install and configure those tools**
+
+  1. Jenkins Plugin
+
+    - Install plugin via UI for my tools 
+
+    - In Jenkins UI -> go to Tools -> Choose tools and tools version that I want to intall -> Then I should have those tools available in Jobs 
+
+  2. Install those tool directly on the Server
+
+    - Go inside Jenkins `docker exec -it -u 0 <docker-id> bash` and install tools in there  
+
+    - Look up what distribution of Linux my server is running so I can find respective installation guild for that tools : `cat etc/issue`
+
+    - Update package Manager : `apt update`
+
+    - Install curl : `apt install curl` . Curl is a command-line tool and library used for tranfering data with URL . Support HTTP, HTTPS, FTP, FTPS, SCP ... and more . 
+
+    - Using curl to get a Script that and install Nodejs and Npm : `curl -sL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh` . Then execute that Script `bash nodesource_setup.sh` then `apt install nodejs`
+
+  3. Install Stage View Plugin
+
+    - This Plugins help me see diffent stage defined in the UI . This mean Build Stage, Test, Deploy will displayed as separate stage in the UI 
+
+    - Go to Available Plugin -> Stage View
 
 ---
 
