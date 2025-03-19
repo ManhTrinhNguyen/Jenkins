@@ -57,7 +57,7 @@
 
   - To check Volume that I create : `docker inspect volume jenkins_home`
 
-### Install Build tools in Jenkins
+### Practice 3:  Install Build tools in Jenkins
 
 <img width="937" alt="Screenshot 2025-03-19 at 09 00 17" src="https://github.com/user-attachments/assets/03f85e65-b362-4bb2-8053-81d2ae3310d9" />
 
@@ -89,6 +89,26 @@
 
     - Go to Available Plugin -> Stage View
 
+### Practice 4 : Docker in Jenkins 
+
+  - Most of scenerio I will need to build Docker Image in Jenkins . That mean I need Docker Command in Jenkins . The way to do that is attaching a volume to Jenkins from the host file
+
+  - In the Server (Droplet itself) I have Docker command available, I will mount Docker directory from Droplet into a Container as a volume . This will make Docker available inside the container
+
+  - To do that I first need to kill current Container and create a new : `docker stop <container-id>`
+
+  - Check the volume : `docker ls volume` . All the data from the container before will be persist in here and I can use that to create a new Container
+
+  - Start a new container : `docker run -d -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock jenkins/jenkins:lts`
+
+    -  /var/run/docker.sock:/var/run/docker.sock : I mount a Docker from Droplet to inside Jenkins
+   
+  - Get inside Jenkins as Root : `docker exec -it -u 0 <container_id> bash`
+
+    - Things need to fix :
+
+      - `curl https://get.docker.com/ > dockerinstall && chmod 777 dockerinstall && ./dockerinstall` . With this Curl command Jenkins container is going to fetch the latest Version of Docker from official size so it can run inside the container, then I will set correct permission the run through the Install
+      - Set correct Permission on `docker.sock` so I can run command inside the container as Jenkins User  `chmod 666 /var/run/docker.sock`: docker.sock is a Unix socket file used by Docker daemon to communicate with Docker Client  
 ---
 
 ## Project 2: Create a Jenkins Shared Library
