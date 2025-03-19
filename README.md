@@ -245,7 +245,35 @@
 
   - 3 tools that Jenkins support : Maven, Gradle and JDK . If I need Yarn or NPM I need to do other way
 
-  - The way to define tools in `tools {}` is using the name that Jenkins supported and next is name of the tool (have to pre-installed in Jenkins) 
+  - The way to define tools in `tools {}` is using the name that Jenkins supported and next is name of the tool (have to pre-installed in Jenkins)
+
+**Parameters**
+
+  - `parameters {}`
+
+  - Maybe I have some external Configuration I want to provide to my build to change some behavior . Example I could have a build that deploy my Application to a Staging Server and I want to select which version of application I want to deploy
+
+  - Type of Parameters :
+
+    - `string(name: 'VERSION', defaultValue: '', descriptions: '')`
+   
+    - `choice(name: 'VERSION', choices['1.0.0', '2.0.0', '3.0.0'], descriptions: '')` : Example I can have a choices of Version
+   
+    - `booleanParam(name: 'executeTests', defaultValue: true, descriptionL '')`: example I want to skip certain Stage
+   
+  - Once those Types defined I can use it in different Stages :
+
+    ```
+      when {
+        expression {
+          params.executeTests == True
+        }
+      }
+
+      - If executeTest is True execute that stage . if not don't execute
+    ```
+
+  - So I can use it in Conditionals, or I can get its values direct in Steps `"${params.VERSION}"`
 ---
 
 ## Project 2: Create a Jenkins Shared Library
