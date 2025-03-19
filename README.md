@@ -187,6 +187,28 @@
     - `failure {}` :  I will execute a script here that is only relevant if the build failed
    
   - To generalize in the post block, I can define expression of either build status or build status change
+
+**Define Conditionals for each Stage**
+
+  - For example : I only want to run the test in Development Branch build , I don't want to run build for other features Branch build or any other build .
+
+  - I can define : When Expressions
+
+    ```
+    when {
+      expression {
+        BRANCH_NAME = 'dev' 
+      }
+    }
+
+    This Stage will execute if the current Branch is dev
+    ```
+
+  - The Branch name alway available through Jenkins ENV . For example : BRANCH_NAME = 'dev' .
+
+  - I can also define OR like this `BRANCH_NAME = 'dev' || BRANCH_NAME = 'master'`
+
+  - I can also define only build Application if the Code changes made in project : `BRANCH_NAME = 'dev' && CODE_CHANGES == true`  . The `CODE_CHANGES == true` is a Variable  defined on the global script 
 ---
 
 ## Project 2: Create a Jenkins Shared Library
