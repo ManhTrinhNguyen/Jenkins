@@ -108,7 +108,68 @@
     - Things need to fix :
 
       - `curl https://get.docker.com/ > dockerinstall && chmod 777 dockerinstall && ./dockerinstall` . With this Curl command Jenkins container is going to fetch the latest Version of Docker from official size so it can run inside the container, then I will set correct permission the run through the Install
-      - Set correct Permission on `docker.sock` so I can run command inside the container as Jenkins User  `chmod 666 /var/run/docker.sock`: docker.sock is a Unix socket file used by Docker daemon to communicate with Docker Client  
+      - Set correct Permission on `docker.sock` so I can run command inside the container as Jenkins User  `chmod 666 /var/run/docker.sock`: docker.sock is a Unix socket file used by Docker daemon to communicate with Docker Client
+     
+### Pipeline Jobs 
+
+  - Stuitable for CI/CD
+
+  - Scripting - Pipeline as Code
+
+**Connect Pipeline build to Git Repo**
+
+  - The main use case for all the builds that I need to execute workflow for my Application Repo
+
+**Pipeline**
+
+  - This part is what I will do using Script
+
+  - There is 2 options : Pipline Script, Pipeline Script from Source Code Management
+
+  - Script is written in Groovy
+
+  - Groovy Sandbox: I am allow to use limited number of Groovy built-in functions in this Script without needing Permission from Jenkins Administator . So these are the Functions does not seem as risky or insecure when they are executed on Jenkins they are kind of Whitelisted and If I want to use Groovy Library or some other Function then for those specific Function I would need Approval of Jenkins Admin
+
+  - However The best practice is to have infrastructure, the configuration management and all this configuration in my Application code . Which mean I should have Groovy script in my Source Code Management together with my Application .
+
+**Source Code Management Script in Pipeline Set up**
+
+  - Repository URL : My github repo URL
+
+  - Credentials : Credentials of my Github
+
+  - Branch to build : */<branch name> : If I leave it as * It will build the whole Branches .
+
+  - This mean this Pipeline Job will check out the Repository and inside that Repository in the Root Folder it will look for a file call Jenkinsfile
+
+**Jenkins File**
+
+  - Jenkins file can be written as a scripted Pipeline or Declarative Pipeline .
+
+  - Scripted : First Syntax, Groovy Engine , Advanced scripting capabilities high flexibilities .
+
+  - Declarative : More recent addition, easier to start bcs I have predefined Structure
+
+  - Required field of Jenkins :
+
+    - pipeline : Must be top level
+   
+    - agent any: This build on any available Jenkins Agent . Agent can be a Node, it could be executable on that Node . This is more relevant when I have Jenkins Cluster with Master and Slaves where I have Window Nodes and Linux Nodes ....
+   
+    - stages : Where the whole work happen . I have many diffent Stages in Pipeline . Inside Stages I have Stage , Inside Stage I have steps to execute that Stage
+   
+    <img width="600" alt="Screenshot 2025-03-19 at 11 26 16" src="https://github.com/user-attachments/assets/ca993f0d-d029-4fda-8cc8-169239466fe8" />
+
+    - stage: I can have multiple Stage . Build Stage, Test Stage , Deploy Stage .....
+   
+  - Declarative checkout SCM : This come from my Coniguration where I define Git Repo, URL and the Branch (Pipeline Section).
+
+  - There is 2 Main Advantage that comes with Scripted Pipelines :
+
+    - First one : The moment I need kind of Conditional Logic or a little more Complex between Steps, I have very limited on UI Conigfuration, and I need multiple Plugin in different Jobs and I need to manage those Plugins (High Maintainence Cost) . So if I Script Pipeline it will be super easy to program write those conditional, I can easily express any kind of Conditional I can set Variable I can have Complex Logic without limited by UI
+   
+    - Second one : With Pipeline I don't have 7 different Build that are chained . Rather I have 1 Build with multiple Steps and each step is a Sub Job with its own configuration its own task but I don't have any effort in chaining them or connecting them bcs they are part of one same pipeline, one job and I have the seamless intergration of multiple steps . So Pipeline is bacsically the Superset of multiple freestyle jobs but in the much more simplytic ways 
+
 ---
 
 ## Project 2: Create a Jenkins Shared Library
