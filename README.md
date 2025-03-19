@@ -249,6 +249,8 @@
 
 **Parameters**
 
+  <img width="600" alt="Screenshot 2025-03-19 at 13 30 11" src="https://github.com/user-attachments/assets/222f13e7-f901-434a-ad33-1f9817859c05" />
+
   - `parameters {}`
 
   - Maybe I have some external Configuration I want to provide to my build to change some behavior . Example I could have a build that deploy my Application to a Staging Server and I want to select which version of application I want to deploy
