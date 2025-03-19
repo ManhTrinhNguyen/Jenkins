@@ -213,6 +213,20 @@
   - I can also define only build Application if the Code changes made in project : `BRANCH_NAME = 'dev' && CODE_CHANGES == true`  . The `CODE_CHANGES == true` is a Variable  defined on the global script
 
 
+**Environment Variable**
+
+  - Variables are available from Jenkins : `<Jenkins-enpoint>/env-vars.htlm`
+
+  - In addition I can provide my Own ENV in : Whatever ENV I defined in here will be available for the whole Pipeline . The way to use that ENV is `"${envName}"`
+    
+  ```
+  pipeline {
+    agent any
+    environment {}
+    stages {}
+  }
+    
+  ``` 
 ---
 
 ## Project 2: Create a Jenkins Shared Library
