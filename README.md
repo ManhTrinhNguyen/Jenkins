@@ -168,7 +168,10 @@
 
     - First one : The moment I need kind of Conditional Logic or a little more Complex between Steps, I have very limited on UI Conigfuration, and I need multiple Plugin in different Jobs and I need to manage those Plugins (High Maintainence Cost) . So if I Script Pipeline it will be super easy to program write those conditional, I can easily express any kind of Conditional I can set Variable I can have Complex Logic without limited by UI
    
-    - Second one : With Pipeline I don't have 7 different Build that are chained . Rather I have 1 Build with multiple Steps and each step is a Sub Job with its own configuration its own task but I don't have any effort in chaining them or connecting them bcs they are part of one same pipeline, one job and I have the seamless intergration of multiple steps . So Pipeline is bacsically the Superset of multiple freestyle jobs but in the much more simplytic ways 
+    - Second one : With Pipeline I don't have 7 different Build that are chained . Rather I have 1 Build with multiple Steps and each step is a Sub Job with its own configuration its own task but I don't have any effort in chaining them or connecting them bcs they are part of one same pipeline, one job and I have the seamless intergration of multiple steps . So Pipeline is bacsically the Superset of multiple freestyle jobs but in the much more simplytic ways
+   
+  <img width="600" alt="Screenshot 2025-03-19 at 11 49 23" src="https://github.com/user-attachments/assets/fb20cc90-eaf0-46c7-8ad0-5c1aa9d7154f" />
+
 
 ---
 
