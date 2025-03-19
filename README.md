@@ -217,16 +217,35 @@
 
   - Variables are available from Jenkins : `<Jenkins-enpoint>/env-vars.htlm`
 
+    <img width="600" alt="Screenshot 2025-03-19 at 12 59 34" src="https://github.com/user-attachments/assets/90531c49-5f01-4aa3-a32b-33fc339970dd" />
+
   - In addition I can provide my Own ENV in : Whatever ENV I defined in here will be available for the whole Pipeline . The way to use that ENV is `"${envName}"`
-    
-  ```
-  pipeline {
-    agent any
-    environment {}
-    stages {}
-  }
-    
-  ``` 
+ 
+  - Another Practice I can use is Credentials . Example I have the Stage that deploy my Application and that Stage I need Credentials of Development Server to connect to it and to copy the Artifact :
+
+    - Define Credentials in Jenkins UI . Once Credentials defined I can use it in Jenkinsfile . To use that I can define a ENV like this in the environment : `SERVER_CREDENTIALS = credentials('')`
+   
+    - credentials('<credentials-id>'): is a function that will bind the credentials to my ENV . This is a plugin name Credentials Binding Plugin
+
+**Wrapper Syntax**
+
+  <img width="600" alt="Screenshot 2025-03-19 at 13 07 10" src="https://github.com/user-attachments/assets/1485699c-f749-4a42-bf2e-7ab26c21d2dd" />
+
+  - If I need credentials for only Specific Stage I use Wrapper Syntax : `withCredentials([]) {}`. This take as parameter an Object `[]`. And that Object will be `usernamePassword(credentials: '<crendital_id>', usernameVariable: USER, passwordVariable: PWD)`, this function that let me get username and password of that credentials individually and I can store my username and password as a Varibable then Inside the block I can use USER and PWD Variable
+
+  - I have to have 2 Plugin in Jenkins : Credentials Plugin (Allow me to create credentials inside Jenkins UI) , Credentials Binding Plugin (Allow me to use though credentials in Jenkinsfile through ENV) 
+
+**Attr for build tool**
+
+  <img width="600" alt="Screenshot 2025-03-19 at 13 15 14" src="https://github.com/user-attachments/assets/749a018a-8ed9-43d9-9046-2e9dac227faa" />
+
+  - `tools {}` provide me with build tools for my project
+
+  - Bcs if run `mvn install` or `gradle build` or `npm package` I need those tools available in Jenkinsfile
+
+  - 3 tools that Jenkins support : Maven, Gradle and JDK . If I need Yarn or NPM I need to do other way
+
+  - The way to define tools in `tools {}` is using the name that Jenkins supported and next is name of the tool (have to pre-installed in Jenkins) 
 ---
 
 ## Project 2: Create a Jenkins Shared Library
