@@ -172,7 +172,21 @@
    
   <img width="600" alt="Screenshot 2025-03-19 at 11 49 23" src="https://github.com/user-attachments/assets/fb20cc90-eaf0-46c7-8ad0-5c1aa9d7154f" />
 
+### Jenkins Syntax 
 
+**post attr**
+
+  - Execute some logic after All Stages executed
+
+  - Conditions I can use: 
+
+    - `always {}`: Whatever is in there it will execute no matter what . Alway Execute . 
+   
+    - `success {}` : I will execute a script here that is only relevant if the build succeeded
+   
+    - `failure {}` :  I will execute a script here that is only relevant if the build failed
+   
+  - To generalize in the post block, I can define expression of either build status or build status change
 ---
 
 ## Project 2: Create a Jenkins Shared Library
