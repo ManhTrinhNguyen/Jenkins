@@ -192,6 +192,8 @@
 
   - For example : I only want to run the test in Development Branch build , I don't want to run build for other features Branch build or any other build .
 
+  <img width="600" alt="Screenshot 2025-03-19 at 12 41 05" src="https://github.com/user-attachments/assets/41a29974-a7e0-466e-8da9-ae8be31b1a41" />
+
   - I can define : When Expressions
 
     ```
@@ -208,7 +210,9 @@
 
   - I can also define OR like this `BRANCH_NAME = 'dev' || BRANCH_NAME = 'master'`
 
-  - I can also define only build Application if the Code changes made in project : `BRANCH_NAME = 'dev' && CODE_CHANGES == true`  . The `CODE_CHANGES == true` is a Variable  defined on the global script 
+  - I can also define only build Application if the Code changes made in project : `BRANCH_NAME = 'dev' && CODE_CHANGES == true`  . The `CODE_CHANGES == true` is a Variable  defined on the global script
+
+
 ---
 
 ## Project 2: Create a Jenkins Shared Library
