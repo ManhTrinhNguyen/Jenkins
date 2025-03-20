@@ -276,6 +276,30 @@
     ```
 
   - So I can use it in Conditionals, or I can get its values direct in Steps `"${params.VERSION}"`
+
+**Using External Groovy Script**
+
+<img width="600" alt="Screenshot 2025-03-20 at 13 16 14" src="https://github.com/user-attachments/assets/f05118ff-985a-49fd-a4f7-42cebd9a8dfd" />
+
+  - Imagine scenario when I have all these Pipelines Steps, where I build front end and Run test , build backend and run test etc .... many different stages , many different logics . So good practice is to clean up Jenkinsfile and put those logis or script into its own files
+
+  - The way to do that is to extract separate Groovy Script and extract it into external file
+
+  - In the Pipeline of Jenkins file I can write Groovy script in `script {}`
+
+  - All the ENV in Jenkinsfile are available in Groovy Script
+
+**Input parameters in Jenkinsfile**
+
+<img width="600" alt="Screenshot 2025-03-20 at 13 35 01" src="https://github.com/user-attachments/assets/363ca71a-6fba-4a04-b943-398c0e9ce914" />
+
+  - I can implement in Jenkinsfile is to allow users to input some data on one of those execution steps .
+
+  - For example : I am building Application I have run test I have build Artifact and in the end I want User to select which ENV should be deploy on Or maybe I am building a new Pipeline and I want user to Input a Version of the Artifact that should be deploy to a Staging Server
+
+  - The way to do that is in : `input {}` inside -> I have attr `message "Select the ENV to deploy to"` | Also I have attr `ok "ENV selected"` . Now I have Option attr `parameters {}` this parameters attr is the same one as the Parameters above
+
+  - When I run this build . This build will be pause until User select Value
 ---
 
 ## Project 2: Create a Jenkins Shared Library
