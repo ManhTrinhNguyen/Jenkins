@@ -300,7 +300,25 @@
   - The way to do that is in : `input {}` inside -> I have attr `message "Select the ENV to deploy to"` | Also I have attr `ok "ENV selected"` . Now I have Option attr `parameters {}` this parameters attr is the same one as the Parameters above
 
   - When I run this build . This build will be pause until User select Value
+
+### Multiple Branch Pipeline 
+
+  - In Git repo usally I have 1 Main Branch and multiple children Branch like : Feature, Bugfix or etc ... . I can run test on all of them but I don't want to deploy them . However in Main Branch whenever a children Branch are merged Once it completed I want to Test, Build and Deploy afterward
+
+  - There is 2 main point :
+
+    - First, I need Pipeline for all the Branches so I can run test . The advantage of this is if I broke tests or something isn't working in the feature branch or bugfix branch before merging into Main Branch  
 ---
+
+
+
+
+
+
+
+
+
+
 
 ## Project 2: Create a Jenkins Shared Library
 
