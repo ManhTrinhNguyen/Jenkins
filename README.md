@@ -348,7 +348,25 @@
 
   - Now If I go back to Git repo and create a new branch . Then I go back to Jenkins and execute Scan MultiBranch Pipeline Now I will have that Branch 
 
+### Credentials in Jenkins 
 
+  - Crentials is a Plugin that I installed to Store and Manage Credentials Centrally
+
+  - There is 3 Different Scope : Global , System Scope, Multi Branch Pipeline 
+
+    - System Scope : Only available on Jenkins Server . For example, If I am a Jenkins Admin that administor a Jenkins server like Configuration Jenkins, Communication, Interface with other Services I will create a System Credentials . Bcs System Credentials are not visible or accessible by Jenkins Jobs .
+   
+    - Global : Accessible everywhere
+   
+    - Multi Branch Pipeline : This scope is limited to my Project and this come only with multi Branch Pipeline . And this acutally come from a Folder Plugin . Folder Plugin is basically organize my build jobs in folder
+   
+    - Note : This is a good way to organize Credentials but also separate them . If I have a very complex, big deployment project or 2 team that have their own project on the same Jenkins I can hide the credentials between project
+
+  - Type of Credentials : Username and Password, Certificate, Secret File , Secret Text, Github
+
+    - NOTE : Depending on other Plugin I have installed in Jenkins I might have new type of Credentials
+   
+- 
 
 
 
