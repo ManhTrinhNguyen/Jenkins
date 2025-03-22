@@ -305,9 +305,56 @@
 
   - In Git repo usally I have 1 Main Branch and multiple children Branch like : Feature, Bugfix or etc ... . I can run test on all of them but I don't want to deploy them . However in Main Branch whenever a children Branch are merged Once it completed I want to Test, Build and Deploy afterward
 
-  - There is 2 main point :
+**There is 2 main point**
 
-    - First, I need Pipeline for all the Branches so I can run test . The advantage of this is if I broke tests or something isn't working in the feature branch or bugfix branch before merging into Main Branch  
+  - First, I need Pipeline for all the Branches so I can run test . The advantage of this is if I broke tests or something isn't working in the feature branch or bugfix branch before merging into Main Branch
+   
+  - Second, I need different behavior base on the Branch in Jenkinsfile . For example : If it Main Branch I want to build and deploy, if it not I want just Test and skip the rest
+   
+**How to go for those 2 Points** 
+
+  - First : I need to define multiple branch pipelines . I need a pipelines for every branch Main, Feature, Bugfix etc ... I also want dynamically add them (I don't need to configuring the Branch Name) .
+
+  - Second : Usally in projects I would have 1 Jenkinsfile that all branches share . Jenkinsfile in Main Branch would be the same as in all other Branches . So inside that Share Jenkinsfile, I need logic to define to build the Branch and to deploy it for Master branch and just execute the Test for all the other Branches 
+
+**Set up in UI First Point**
+
+  - Go for the Multiple Branch Pipeline
+
+    - In Branch Sources : I can configure Git Repo for my Branch Pipeline -> Add Credentials -> Add Discover Branches (automatically added) -> Add Filter by name (regular expression)
+   
+      - In Filter branch by name with Regular Expression : `* (this will match all the branches)` .
+     
+  - The rest of configuration should be define in JenkinsFile
+
+  - After created, A Scan Taks in Jenkins is running will scan each branch for a Jenkinsfile . Whenever it find a Jenkins file in the branch It will build a branch . If doesn't find Jenkinsfile it will skip and ignore it .
+
+  - In the background individual pipeline, jobs get created for each branch that I have configured in regular expression and also have Jenkinsfile defined . Usually every branch has Jenkinsfile bcs I create new Branch from Main Branch
+
+  - Technically, I could define multiple branches in a regular pipeline job, or define regular expression here as well . And it also build every Branch I define which is has Jenkinsfile . However I don't have all the Plugins and Variable that are useful for building multiple branches . Also I don't have a Nice transparent overview of which Branches are built
+
+
+**Branch-based logic for Multiple Branch Pipeline | Second Point**
+
+  - In Jenkinsfile, I will add logic that checks which Branch that currently building and base on the branch it will decide wheather to execute the Stage or not . 
+
+    - I want the Test Stage to execute for all Branches
+   
+    - I want Build Stage and Deploy Stage to execute for only Main Branch . I can do that by using `when {expression {BRANCH_NAME = 'main'}}` . when expression syntax is like if conditions in programing language
+   
+      - `BRANCH_NAME` is a ENV that come out of the box in the multi branch pipeline jobs . Only available in this multi branch, Not in regular Pipeline
+     
+  - After that I will execute Scan MultiBranch Pipeline Now . This is like a Parent of all the sub pipelines for the individual branches . This will go through all the Branches match by regular expression and try to build all those branches with their respective changes
+
+  - Now If I go back to Git repo and create a new branch . Then I go back to Jenkins and execute Scan MultiBranch Pipeline Now I will have that Branch 
+
+
+
+
+
+
+
+
 ---
 
 
