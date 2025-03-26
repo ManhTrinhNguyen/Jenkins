@@ -443,7 +443,7 @@ def call () {
 
 **User Share Library in Jenkinfile**
 
-- In order to use function in Jenkins Share Lib I have to import that Share Lib : `@Library('jenkins-shared-lib')` .
+- In order to use function in Jenkins Share Lib I have to import that Share Lib : `@Library('jenkins-shared-lib')` . I can also choose specific version if I have `@Library('jenkins-shared-lib@2.0')`
 
   - 'jenkins_shared_lib' : is the name that I gave when defining in global library
  
@@ -506,6 +506,106 @@ def call (String DOCKER_REPO, String IMAGE_NAME, String DOCKER_REPO_SERVER) {
   }
 ```
 
+**Extract Logic into Groovy Class**
+
+- Let say I decide to have separate individual functions for each Docker Command, or maybe I have multiple maven command or git command that I want to execute separately as a separate function that would mean I have multiple groovy file, each of them implementing their own logic, and these command may share credentials, Image name, or Repository url etc and I may end up duplicating a lot of stuff in each function own implementation . In this case make sense to extract these logic and it infomation that these function share into a single file in groovy script and then reference it from here
+
+- I can do it in `src` package . I can add Groovy script here that will hold all the logic centrally . Create package `com.example`
+
+- In `src/com.example/Docker.groovy`
+
+```
+#!/user/bin/env groovy
+package com.example
+
+class Docker implements Serializable {
+
+}
+```
+
+- Add Implement Serializable to the class to support saving the State of the execution if the pipeline is paused and resumed
+
+- Another thing is this method are exposed Globally so when we use them in Jenkinfile we have all of those things like `withCredentials()` that are available in Jenkinfile that also available directly in Jenkin Shared Lib `vars/<all-the-functions>` but It's not available in `src/com.example.Docker.groovy`
+
+- In order to make all the pipeline and syntax available in `src/com.example.Docker.groovy` I need to pass the Parameter those methods in `vars` folder and I will call it `script` . `script` bascially holds all the infomation including environments all the command and methods for the pipeline . `Script` will allow me to execute all those command . 
+
+```
+#!/user/bin/env groovy
+package com.example
+
+class Docker implements Serializable {
+
+  def script
+
+  Docker(script) {
+    this.script = script
+  }
+}
+```
+
+- Create Single method call `buildDockerImage`
+
+```
+#!/user/bin/env groovy
+package com.example
+
+class Docker implements Serializable {
+
+  def script
+
+  Docker(script) {
+    this.script = script
+  }
+
+  def buildDockerImage (String DOCKER_REPO, String IMAGE_NAME, String DOCKER_REPO_SERVER) {
+   script.echo "building the docker image..."
+   script.withCredentials([script.usernamePassword(credentialsId: 'aws_ECR_credential', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+      script.sh "docker build -t ${DOCKER_REPO}:${IMAGE_NAME} ."
+      script.sh "echo '${script.PASS}' | docker login -u '${script.USER}' --password-stdin '${script.DOCKER_REPO_SERVER}'"
+      script.sh "docker push ${DOCKER_REPO}:${IMAGE_NAME}"
+  }  
+}
+
+  - With these credentials like this  ${PASS} ${USER}, I need to use differnet syntax . This is to make sure that the $ that I use to hightlight a variable isn't mistaken for character in the username and password which can cause authentication error I will add single quite and script I put in bracket like this (It has to be in double quote) : '${script.PASS}'
+```
+
+- Now I need to call it from `vars/buildImage.groovy`
+
+```
+import com.example.Docker
+
+def call(String DOCKER_REPO, String IMAGE_NAME, String DOCKER_REPO_SERVER){
+
+  return new Docker(this).buildDockerImage(DOCKER_REPO, IMAGE_NAME, DOCKER_REPO_SERVER)
+}
+
+- I will pass the Object that has access to all the things that are available in Jenkinfile and I gonna do that using `this`, So I am passing the context from `vars/buildImage.groovy` to Docker Class in `src/com.example/Docker` .
+
+- I still need call buildImage function in Jenkinsfile . . Nothing change in Jenkinfile
+
+- NOTE : I could use acutally use classes and functions from the `src` folder I don't have to access them through global Variable . However best practice is to call function from `vars` folder
+```
+
+- I can Also Separate buildDockerImage in Docker Class into 3 Separte function like this : dockerBuildImage, dockerLogin, dockerPush . And then I will create that 3 function in `vars` folder 
+
+<img width="600" alt="Screenshot 2025-03-26 at 15 08 09" src="https://github.com/user-attachments/assets/1423c092-5b2d-4851-b63b-42c79e9ffbfd" />
+
+<img width="600" alt="Screenshot 2025-03-26 at 15 10 26" src="https://github.com/user-attachments/assets/71eea3c4-b057-4418-8dfa-3861e93e992b" />
+
+<img width="600" alt="Screenshot 2025-03-26 at 15 11 25" src="https://github.com/user-attachments/assets/b9beffb9-62dd-47b7-883e-407e3daebfb6" />
+
+**Project Scoped Share Library**
+
+- Let say I have Jenkins share Lib but for only my project, other project or other team may not need them maybe I want to share them for my own pipeline . So I don't need to add Share Lib in Global Library and instead I will refererence library directly from Jenkinsfile
+
+```
+library identifier: 'jenkins-shared-library@main', retriever: modernSCM(
+    [$class: 'GitSCMSource',
+     remote: https://github.com/ManhTrinhNguyen/Jenkins-Docker-Excercise-Shared-Library.git,
+     credentialsId: 'github-credentials'
+    ]
+)
+```
 ---
 
 ## Project 3: Configure Webhook to Trigger CI Pipeline Automatically on Every Change
