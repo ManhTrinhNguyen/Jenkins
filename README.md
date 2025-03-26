@@ -366,40 +366,54 @@
 
     - NOTE : Depending on other Plugin I have installed in Jenkins I might have new type of Credentials
    
-- 
-
-
-
-
-
-
 ---
-
-
-
-
-
-
-
-
-
-
 
 ## Project 2: Create a Jenkins Shared Library
 
-### Technologies Used
-- **Jenkins**
-- **Groovy**
-- **Docker**
-- **Git**
-- **Java**
-- **Maven**
+**What is Jenkins Shared Library ?**
 
-### Project Description
-- Created a **Jenkins Shared Library (JSL)** to extract common build logic.
-- Developed a separate Git repository for the JSL project.
-- Wrote reusable functions in the JSL for use in Jenkins pipelines.
-- Integrated and utilized the JSL in Jenkins pipelines globally and for specific projects in **Jenkinsfiles**.
+- Let's say I have a Java Maven Project that have multiple Microservices . Each Mirco have 1 Pipeline . I would build each Microservice as a Separate Application . Most of the build Logic are same like docker build, docker login etc ... logic . But I don't want to repeat myself with the same logic it is so unefficient 
+
+- The efficient way to do is Jenkin Shared library . This is an extension to Pipeline and Jenkins Shared Library is its own Repository which is written in Groovy, and I can write all the Logic that is gonna be shared accross many different applications in the shared Library and reference that Logic from Jenkinfile in each project . This is for 1 project that have multiple Microservices
+
+**Another use case**
+
+<img width="600" alt="Screenshot 2025-03-26 at 12 20 33" src="https://github.com/user-attachments/assets/b4608619-ade7-4337-94b6-d2e78cb51f8e" />
+
+- What about for a company have multiple Project . All the Projects may not use the same technology stack however some of the logic still the same like : Push Image to Nexus, ECR, ..., to send Notifications to the same Slack Channels . All of this are something that can be shared accross multiple projects in the same company in their pipelines . Instead if 1 team write this logic another team can use it
+
+**Create the Shared Library**
+
+- In order to use Share Library I have to create Repository , Wirte Groovy Code , make Share Library available global or for project, use Share Library in Jenkinfile
+
+- Create new Groovy project in IntelliJ . Bcs Jenkin share library has written in Groovy 
+
+**Structure of Jenkins Share Lib**
+
+<img width="600" alt="Screenshot 2025-03-26 at 12 52 15" src="https://github.com/user-attachments/assets/5e743ee4-30fe-40fc-87e5-d7c6b3804026" />
+
+- Main folder `vars` : This folder include all the function that I will execute or I can call from Jenkinfile . And each function will be its own Groovy file
+
+- `src` Source Folder : Similar to Java src folder . This is where I can have any helper, logic, utility code for those function
+
+- Resources Folder : Which allow me to use external Library for non Groovyfile. I can help SQL Script there, Power shell, shell scripts, JSON files, etc ...
+
+**vars folder**
+
+- The way this work in `vars` . All the files that I have here all those executable functions, I am referencing them by the name of the file . I will use that to call that function in Jenkinfiles
+
+- For example : This is a  `buildJar.groovy` function
+
+```
+#!/user/bin/env groovy
+
+# This line above is let my editor detect that I am working with Groovy script . I can use the same annotation in Jenkinfiles to let my editor know that I am working with Groovy script bcs the function has no .groovy
+
+def call () {
+  echo 'I am building a Jar'
+  sh 'mvn package'
+}
+``` 
 
 ---
 
