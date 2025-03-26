@@ -415,6 +415,27 @@ def call () {
 }
 ``` 
 
+- For example : this is a `buildImage.groovy` function
+
+```
+#!/user/bin/env groovy
+
+# This line above is let my editor detect that I am working with Groovy script . I can use the same annotation in Jenkinfiles to let my editor know that I am working with Groovy script bcs the function has no .groovy
+
+def call () {
+   echo "building the docker image..."
+   withCredentials([usernamePassword(credentialsId: 'aws_ECR_credential', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+      sh "docker build -t ${DOCKER_REPO}:${IMAGE_NAME} ."
+      sh "echo $PASS | docker login -u $USER --password-stdin ${DOCKER_REPO_SERVER}"
+      sh "docker push ${DOCKER_REPO}:${IMAGE_NAME}"
+}
+```
+
+- Once I have those 2 funcion (I can add more) I can push those two in the Repository
+
+**Make Share Library Available**
+
+- Go to Manage Jenkin -> System -> 
 ---
 
 ## Project 3: Configure Webhook to Trigger CI Pipeline Automatically on Every Change
