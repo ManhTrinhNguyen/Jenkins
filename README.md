@@ -492,7 +492,9 @@ def call (String DOCKER_REPO, String IMAGE_NAME, String DOCKER_REPO_SERVER) {
       sh "docker push ${DOCKER_REPO}:${IMAGE_NAME}"
 }
 
-- To pass the value to those Parameter above . In Jenkinfile I can pass a Parameter like this 
+```
+
+- To pass the value to those Parameter above . In Jenkinfile I can pass a Parameter like this :
 
 ```
   stage("build Image"){
@@ -503,7 +505,6 @@ def call (String DOCKER_REPO, String IMAGE_NAME, String DOCKER_REPO_SERVER) {
     }
   }
 ```
-
 
 ---
 
