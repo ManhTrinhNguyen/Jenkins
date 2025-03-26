@@ -435,7 +435,76 @@ def call () {
 
 **Make Share Library Available**
 
-- Go to Manage Jenkin -> System -> 
+- Go to Manage Jenkin -> System -> Global Pipeline Library -> Add Library -> Provide Git URL (Mordern SCM) , Add credentials 
+
+- Default version : This can be either branch, this can also be commit hash or this can be a tag . Just like any other Application I should version my Jenkin Share Lib so whenever I make change I create a new version, tag and then I can reference that tag here . If I define Main Branch here then every new change or every commit to a Repo will be immediately available in whole Jenkin for all the Pipeline and it is a breaking change then my Jenkin file or my Pipeline will not work anymore so having a fixed version is a good idea
+
+- With `Allow default version to be overridden` I can override that default version in my Jenkinfile If I want to
+
+**User Share Library in Jenkinfile**
+
+- In order to use function in Jenkins Share Lib I have to import that Share Lib : `@Library('jenkins-shared-lib')` .
+
+  - 'jenkins_shared_lib' : is the name that I gave when defining in global library
+ 
+  - !!! NOTE : If I don't have import statement or variable definition directly after the Import I have to add _ `@Library('jenkins-shared-lib')_` .
+ 
+  ```
+  stage("build jar"){
+    steps {
+      script {
+        buildJar() # I call the function by the name of the file this will reference the function I defined in Share Lib
+      }
+    }
+  }
+  ```
+
+**Using Parameters**
+
+```
+#!/user/bin/env groovy
+
+# This line above is let my editor detect that I am working with Groovy script . I can use the same annotation in Jenkinfiles to let my editor know that I am working with Groovy script bcs the function has no .groovy
+
+def call () {
+   echo "building the docker image..."
+   withCredentials([usernamePassword(credentialsId: 'aws_ECR_credential', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+      sh "docker build -t ${DOCKER_REPO}:${IMAGE_NAME} ."
+      sh "echo $PASS | docker login -u $USER --password-stdin ${DOCKER_REPO_SERVER}"
+      sh "docker push ${DOCKER_REPO}:${IMAGE_NAME}"
+}
+```
+
+- DOCKER_REPO, IMAGE_NAME, DOCKER_REPO_SERVER is a Global variable . I already has it available so I don't need to access it as Parameter
+
+- I need to pass a Parameter is when I don't have that Variable in Globol for example I don't have DOCKER_REPO, IMAGE_NAME, DOCKER_REPO_SERVER as ENV in global
+
+```
+#!/user/bin/env groovy
+
+# This line above is let my editor detect that I am working with Groovy script . I can use the same annotation in Jenkinfiles to let my editor know that I am working with Groovy script bcs the function has no .groovy
+
+def call (String DOCKER_REPO, String IMAGE_NAME, String DOCKER_REPO_SERVER) {
+   echo "building the docker image..."
+   withCredentials([usernamePassword(credentialsId: 'aws_ECR_credential', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+      sh "docker build -t ${DOCKER_REPO}:${IMAGE_NAME} ."
+      sh "echo $PASS | docker login -u $USER --password-stdin ${DOCKER_REPO_SERVER}"
+      sh "docker push ${DOCKER_REPO}:${IMAGE_NAME}"
+}
+
+- To pass the value to those Parameter above . In Jenkinfile I can pass a Parameter like this 
+
+```
+  stage("build Image"){
+    steps {
+      script {
+        buildImage 'nguyenmanhtrinh/repo' 'java-maven' 'docker.io'
+      }
+    }
+  }
+```
+
+
 ---
 
 ## Project 3: Configure Webhook to Trigger CI Pipeline Automatically on Every Change
