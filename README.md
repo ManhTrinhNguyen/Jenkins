@@ -610,18 +610,35 @@ library identifier: 'jenkins-shared-library@main', retriever: modernSCM(
 
 ## Project 3: Configure Webhook to Trigger CI Pipeline Automatically on Every Change
 
-### Technologies Used
-- **Jenkins**
-- **GitLab**
-- **Git**
-- **Docker**
-- **Java**
-- **Maven**
+- I want the trigger the build automatically whenever a commit is pushed into Git Repository 
 
-### Project Description
-- Installed the **GitLab Plugin** in Jenkins.
-- Configured a **GitLab access token** and established a connection to Jenkins in GitLab project settings.
-- Set up Jenkins to trigger the CI pipeline automatically whenever a change was pushed to GitLab.
+- Other way to trigger build by Scheduling . For example I want this build run every 2 hours or every day at specific time
+
+**For Gitlab**
+
+- First I need Jenkin Plugin call : Gitlab
+
+- Once the plugin install I should see the Gitlab Configuration in Manage -> System
+
+- Config Gitlab in GitLab Configuration - Name, Host URL `gitlap.com` (not the project URL) -> Create API Token for Gitlab
+
+- To Create Gitlab API Token in Gitlab -> Go to user Profile -> Choose Preferences -> Choose Access Token
+
+- In my Pipeline Configuration -> I have Gitlab Connection -> Scroll down to Build Trigger I have Build when changed is pushed to Gitlab
+
+- To configure Gitlab to automatically send notification to Jenkins  whenever commit happen or push happen -> In Gitlab Setting -> Choose Integration -> Scroll down and choose Jenkin -> Choose Push -> Put in Jenkins URL include the Port (If I run Jenkin on Localhost It will not work) -> Put project name (project name is a Job Name inside Jenkin) -> Put username and password of Jenkin
+
+**For Gitlab for every Repository**
+
+<img width="600" alt="Screenshot 2025-03-27 at 09 43 53" src="https://github.com/user-attachments/assets/41f70a4b-aa1d-49e0-ae0f-c2365357aec5" />
+
+- I need another Plugin call Multibranch Scan Webhook Trigger
+
+- Once Installed I have `Scan by Webhook` in Multi branch Configuration -> Choose Scan by Webhook I have Trigger Token (This is a token that I can name whatever I want this Token will be use for the communication between Gitlab and Jenkin, or Github and Jenkins ...)
+
+- To use that Token I will go to Gitlab -> choose Webhook (Webhook is basically same Integration) . The way it work is I will tell Gitlab to send Jenkin a Notification on a Specific URL using that Token and when Jenkin receive a request it will check a Token and it will trigger a multibranch pipeline which has scan by webhook configured for that specific token . I don't need the Secret Token 
+
+- `Periodically if not otherwise run` : is for shedule the run 
 
 ---
 
