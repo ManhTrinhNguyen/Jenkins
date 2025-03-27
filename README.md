@@ -658,45 +658,86 @@ library identifier: 'jenkins-shared-library@main', retriever: modernSCM(
 
 ## Project 4: Dynamically Increment Application Version in Jenkins Pipeline
 
-### Technologies Used
-- **Jenkins**
-- **Docker**
-- **GitLab**
-- **Git**
-- **Java**
-- **Maven**
+**Software Version**
 
-### Project Description
-- Configured the CI pipeline to:
-  - Increment the application patch version dynamically.
-  - Build the Java application and clean old artifacts.
-  - Build a Docker image with a dynamic Docker image tag.
-  - Push the image to a private **DockerHub** repository.
-  - Commit the version update back to the Git repository.
-- Ensured the Jenkins pipeline did not trigger automatically on CI build commits to avoid commit loops.
+<img width="923" alt="Screenshot 2025-03-27 at 10 43 11" src="https://github.com/user-attachments/assets/6c03da2c-3c98-429c-aed0-74a24b450ba7" />
 
----
+- I decide how I version my Application . When I decide to update feature or fix bug of my App, I want to version that and release it
 
-## Project 5: Create a CI Pipeline with Jenkinsfile (Freestyle, Pipeline, Multibranch Pipeline)
+- 3 Parts of Version :
 
-### Technologies Used
-- **Jenkins**
-- **Docker**
-- **Linux**
-- **Git**
-- **Java**
-- **Maven**
+  - Major: Contain big change, bunch of new feature, breaking change ...
+ 
+  - Minor Version: This is also when I have a lot of Changed but they are not as impactful as a Major version Upgrade
+ 
+  - path or incremental version : Minor changes or bug fixe, doesn't change API
+ 
+  - -SNAPSHOT is a suffix that I can add to my version . Suffix is for more infomation
 
-### Project Description
-- Built a CI Pipeline for a **Java Maven application** to build and push artifacts to the repository.
-- Installed build tools (Maven, Node.js) in Jenkins.
-- Made Docker available on the Jenkins server.
-- Created Jenkins credentials for a Git repository.
-- Set up different Jenkins job types (Freestyle, Pipeline, Multibranch Pipeline) for:
-  - Connecting to the application’s Git repository.
-  - Building JAR files.
-  - Building Docker images.
-  - Pushing images to a private **DockerHub** repository.
+**How to Increment the version ?**
 
----
+- I want to be able to automatically increase that version inside my build . So When I commit changes to Jenkins, Jenkins build pipeline basically should increment the version and release a new application . This should all happen imediately .
+
+- Each of those build tool they are all have commands or plugins that are used to increment the version .
+
+**Increment version for Java Maven**
+
+<img width="925" alt="Screenshot 2025-03-27 at 10 59 35" src="https://github.com/user-attachments/assets/4532c41c-bdc8-41ac-9202-56d3b622bbff" />
+
+- Command : `mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion} versions:commit`
+
+  - `parse-version` : It goes and find pom file and it find a version tag . When it find a version tag it parses the version inside into 3 parts Major, Minor, Increment
+ 
+  - `version:set` : Set a version between version tag
+ 
+  - `-DnewVersion` : This is a Parameter for `versions:set`
+ 
+  - `\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}` : This is How I know what is the next version that I need to increment to. I use `next` so it the parse-version know that Incremental part need to increase . If I don't use `next` it will keep it as it is
+ 
+  - `version:commit` : Replace pom.xml with new Version
+ 
+- To execute the command in the sh command in Jenkinsfile the syntax to escape dollar sign a little different: `mvn build-helper:parse-version versions:set -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} versions:commit`
+
+- $BUILD_NUMBER : is a ENV that Jenkin make available for us and my pipeline job 
+
+**For Docker Image Version** 
+
+<img width="600" alt="Screenshot 2025-03-27 at 11 46 50" src="https://github.com/user-attachments/assets/a3388017-b0cb-47e1-aa6d-430c7da78a77" />
+
+- I need to read pom.xml and access the version value then set it as a Variable
+
+- To read pom.xml file and looking for version tag inside and put the `(.+)` regular expression to dynamic set a version value and set a variable to it called matcher: `def matcher = readFile(pom.xml) =~ <version>(.+)</version>` . This will give me an array of all the verions tags that it could find in this case I just have 1 and also the version value (child of version tag), so I would get that element like this : `matcher[0][1]`
+
+**Dynamic increment App version in Nodejs for Jenkins**
+
+<img width="600" alt="Screenshot 2025-03-27 at 11 30 10" src="https://github.com/user-attachments/assets/2c2feb41-ee25-4b68-8b2b-1c61aeb3faba" />
+
+- npm install -D auto-version-js
+
+ - npx auto-version --patch # +0.0.1
+ - npx auto-version --minor # +0.1.0
+ - npx auto-version --major # +1.0.0
+ - npx auto-version # no args is equivalent to --patch
+   
+- Install Plugin to use "readJSON file" : Pipeline: Utility Steps 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
