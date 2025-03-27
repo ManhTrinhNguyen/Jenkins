@@ -1,5 +1,3 @@
-# Demo Projects: Build Automation & CI/CD with Jenkins
-
 ## Project 1: Install Jenkins on DigitalOcean
 
 ### Technologies Used
