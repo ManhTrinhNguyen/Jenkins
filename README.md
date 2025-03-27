@@ -628,6 +628,20 @@ library identifier: 'jenkins-shared-library@main', retriever: modernSCM(
 
 - To configure Gitlab to automatically send notification to Jenkins  whenever commit happen or push happen -> In Gitlab Setting -> Choose Integration -> Scroll down and choose Jenkin -> Choose Push -> Put in Jenkins URL include the Port (If I run Jenkin on Localhost It will not work) -> Put project name (project name is a Job Name inside Jenkin) -> Put username and password of Jenkin
 
+**For Github**
+
+- Go to your GitHub repo → Settings → Webhooks
+
+- Click "Add webhook"
+
+- Payload URL: `http://<your-jenkins-domain>/github-webhook/`
+
+- Content type: application/json
+
+- Choose : Just the push event
+
+- Save webhook
+
 **For Multibranch pipeline for every Repository**
 
 <img width="600" alt="Screenshot 2025-03-27 at 09 43 53" src="https://github.com/user-attachments/assets/41f70a4b-aa1d-49e0-ae0f-c2365357aec5" />
