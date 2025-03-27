@@ -708,6 +708,16 @@ library identifier: 'jenkins-shared-library@main', retriever: modernSCM(
 
 - To read pom.xml file and looking for version tag inside and put the `(.+)` regular expression to dynamic set a version value and set a variable to it called matcher: `def matcher = readFile(pom.xml) =~ <version>(.+)</version>` . This will give me an array of all the verions tags that it could find in this case I just have 1 and also the version value (child of version tag), so I would get that element like this : `matcher[0][1]`
 
+**Replace new Version in Dockerfile**
+
+<img width="600" alt="Screenshot 2025-03-27 at 12 11 22" src="https://github.com/user-attachments/assets/62d3f57e-2801-471d-b91c-c6282d375f6a" />
+
+- In Dockerfile remove the hardcode version and replace with * . This say like just take a jarfile in target folder that start with java-maven-app : `COPY ./target/java-maven-app-*.jar /usr/app` .
+
+- The CMD to run the jar file like this : `CMD java -jar java-maven-app-*.jar` . This command will execute on shell command context
+
+- Also I need to before I build any new Jar file I need to clean or delete Target Folder with old jarfile : `mvn clean package`
+
 **Dynamic increment App version in Nodejs for Jenkins**
 
 <img width="600" alt="Screenshot 2025-03-27 at 11 30 10" src="https://github.com/user-attachments/assets/2c2feb41-ee25-4b68-8b2b-1c61aeb3faba" />
@@ -722,6 +732,42 @@ library identifier: 'jenkins-shared-library@main', retriever: modernSCM(
 - Install Plugin to use "readJSON file" : Pipeline: Utility Steps 
 
 
+**Make Jenkin commit and push to Repo**
+
+<img width="600" alt="Screenshot 2025-03-27 at 12 44 13" src="https://github.com/user-attachments/assets/67f41f4d-8cf9-47d3-9478-7365a6167e22" />
+
+- Everytime pipeline run in Jenkins, it will create a new Image Version and then will commit that pom.xml change back into repository so now other Developer want to commit something to that Branch they first need to fetch that change that Jenkin Commited and continus working from there .
+
+- I will add another Git commit version update Stage :
+
+  - First I need Credentials to git Repository . I will use `withCredentials()`
+ 
+  - Inside `withCredentials()` block :
+ 
+  ```
+  # To set configuration that kept in .git folder and global configuration in git .
+  # I want to set git config Global I can put a flag --global
+  
+  sh 'git config --global user.email "jenkin@gmail.com"' # If there is no User Email at all, Jenkin will complain when commiting changes . It will say there is no email that was detected to attach to as a metadata to that commit
+  sh 'git config --global user.name "Jenkins"'
+  
+  # Set Origin access
+  sh "git remote set-url origin https://${USER}:${PASSWORD}@<git-repo-url>"
+  
+  sh 'git add .'
+  sh 'git commit -m "ci : version bump"'
+  sh 'git push origin HEAD:<job-branch>'
+  ```
+
+- When Jenkins check outs up to date code in order to start a pipeline it doesn't check out the Branch, it checkout the commit hash (the last commit from that branch). That is the reason why I need to do `sh 'git push origin HEAD:<job-branch>'`. So it saying that push all the commits that we have made inside this commit Branch inside this Jenkin Job.
+
+**Ignore Jenkins Commit for Jenkins Pipeline Trigger**
+
+- I need someway to detect that commit was made by Jenkin not the Developer and Ignore the Trigger when the Commit is from Jenkins
+
+- I need a Plugin : Ignore Commiter Strategy
+
+- Go to my Pipeline Configuration -> Inside the Branch Sources I see the Build Strategy (This is an option just got through the plugin) -> In this option I will put the email address of the committer that I want to Ignore . I can provide a list of email
 
 
 
